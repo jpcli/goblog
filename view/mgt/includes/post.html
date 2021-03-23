@@ -1,0 +1,185 @@
+{{ define "include" }}
+
+<div class="layui-card">
+	<!-- TODO: 在card的header中添加按指定id搜索功能等，参考https://www.layui.com/layuiadmin/std/dist/views/app/content/list.html -->
+	<div class="layui-card-header">卡片面板</div>
+	<div class="layui-card-body">
+		<button type="button" class="layui-btn" id="btn-new-post">
+			<i class="layui-icon layui-icon-add-circle-fine"></i> 新建文章
+		</button>
+		<table id="list-table" lay-filter="list-table"></table>
+	</div>
+</div>
+
+
+<script type="text/html" id="tool-bar">
+	<button class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">
+		<i class="layui-icon layui-icon-edit"></i> 编辑
+	</button>
+	<button class="layui-btn layui-btn-xs" lay-filter="opt-status">
+		<i class="layui-icon layui-icon-tabs"></i> 操作
+		<i class="layui-icon layui-icon-triangle-d"></i>
+	</button>
+</script>
+
+<script type="text/javascript">
+	// 监听“新建文章”按钮
+	document.querySelector("#btn-new-post")
+	.addEventListener("click", function() {
+		openEditer(0, "新建文章")
+	})
+
+	// 打开文章编辑页弹窗
+	function openEditer(id, title) {
+		layer.open({
+			type: 2,
+			area: ["1000px", "700px"],
+			title: title,
+			content: `post-edit.html?id=${id}`
+		})
+	}
+
+	// 刷新表格
+	function reloadTable() {
+		table.reload("list-table")
+	}
+
+	layui.config({
+			base: '/static/layui/lay/extension/'
+		})
+	.use(['table', 'dropdown'], function() {
+		table = layui.table
+		dropdown = layui.dropdown
+
+		dropdownOption = {
+			align: "center",
+			menus: [
+				{ txt: "文章发布", event: "set-publish" },
+				{ txt: "置顶文章", event: "set-sticky" },
+				{ txt: "放入回收站”", event: "set-trash" },
+			]
+		}
+
+		// 表格渲染
+		table.render({
+			elem: '#list-table',
+			id: "list-table",
+			url: '../api/getPostList', //数据接口
+			method: 'POST',
+			page: true, //开启分页
+			cols: [
+				[ //表头
+					{ field: 'pid', title: 'ID', sort: true, fixed: 'left', width: 70 },
+					{ field: 'title', title: '标题' },
+					{
+						field: 'modified',
+						title: '最后修改时间',
+						width: 170,
+						templet: function(d) {
+							return layui.util.toDateString(d.modified * 1000,
+								"yyyy-MM-dd HH:mm:ss")
+						}
+					},
+					{
+						field: 'category',
+						title: '分类',
+						width: 130,
+						templet: function(d) {
+							return d.category.name
+						}
+					},
+					{
+						field: 'tags',
+						title: '标签',
+						width: 300,
+						templet: function(d) {
+							let tags = []
+							if (d.tags != null) {
+								for (let i = 0, len = d.tags.length; i < len; i++) {
+									tags.push(d.tags[i].name)
+								}
+							}
+							return tags.join(" , ")
+						}
+					},
+					{
+						field: "status",
+						title: "状态",
+						align: 'center',
+						width: 100,
+						templet: function(d) {
+							if (d.status == "publish")
+								return `<span class="layui-badge layui-bg-green">发布</span>`
+							else if (d.status == "sticky")
+								return `<span class="layui-badge layui-bg-blue">置顶</span>`
+						},
+					},
+					{ title: "操作", width: 300, align: 'center', fixed: "right", toolbar: '#tool-bar' }
+				]
+			],
+			parseData: function(res) { //res 即为原始返回的数据
+				// 解析原始数据为表格接受的数据
+				return {
+					"code": res.code,
+					"msg": res.msg,
+					"count": res.data.count,
+					"data": res.data.list
+				}
+			},
+			done: function(res) {
+				dropdown.suite("[lay-filter='opt-status']", dropdownOption)
+			}
+		})
+
+		// 监听表格排序
+		table.on("sort(list-table)", function() {
+			dropdown.suite("[lay-filter='opt-status']", dropdownOption)
+		})
+
+		// 表格行工具栏监听
+		table.on('tool(list-table)', function(obj) {
+			console.log(obj)
+			let data = obj.data, // 获得当前行数据
+				layEvent = obj.event, // 获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+				tr = obj.tr // 获得当前行 tr 的 DOM 对象（如果有的话）
+
+			if (layEvent === "edit") {
+				openEditer(data.pid, `编辑文章【${data.pid}】`)
+			} else if (layEvent == "set-publish") {
+				layer.msg("发送请求")
+				setStatus(data.pid, "publish")
+			} else if (layEvent == "set-sticky") {
+				layer.msg("发送请求")
+				setStatus(data.pid, "sticky")
+			} else if (layEvent == "set-trash") {
+				layer.msg("功能正在开发")
+				// layer.msg("发送请求")
+				// setStatus(data.pid, "trash")
+			}
+		})
+
+		// 更改文章状态
+		function setStatus(id, status) {
+			fetch(`../api/modifyPostStatus?id=${id}`, {
+					method: "POST",
+					headers: new Headers({
+						'Accept': 'application/json' // 通过头指定，获取的数据类型是JSON
+					}),
+					body: JSON.stringify({ status: status })
+				})
+			.then(res => {
+				return res.json()
+			})
+			.then(res => {
+				if (res.code) {
+					layer.msg(`错误：${res.msg}`, { icon: 2 })
+				} else {
+					reloadTable()
+					layer.msg(`修改成功`, { icon: 1 })
+				}
+			})
+		}
+	})
+</script>
+
+{{ end }}

@@ -1,0 +1,41 @@
+.pagetab {
+	position: fixed;
+	top: 60px;
+	bottom: 106px;
+	left: 200px;
+	right: 0;
+}
+
+.layui-tab {
+	margin: 3px !important;
+}
+
+.layui-body {
+	top: 106px !important;
+	background-color: #F2F2F2;
+}
+
+.layui-header a,
+.layui-header i {
+	font-size: 16px !important;
+}
+
+/* 第一个tab禁止删除 */
+#pagetab-title> :first-child>i {
+	display: none;
+}
+
+#pagetab-content {
+	padding: 15px;
+	background-color: #F2F2F2;
+}
+
+.tab-iframe {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}

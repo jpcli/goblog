@@ -1,0 +1,192 @@
+body {
+	position: relative;
+}
+
+header {
+	background-color: #F5F5F5;
+	margin-bottom: 30px;
+	padding: 20px 0;
+}
+
+footer {
+	background-color: #F5F5F5;
+	margin-top: 20px;
+	padding: 10px 0;
+}
+
+.panel-primary {
+	border-color: #3d93dc;
+}
+
+.panel-primary>.panel-heading {
+	background-color: #3d93dc;
+	border-color: #3d93dc;
+}
+
+.panel-heading {
+	font-weight: bold;
+}
+
+.panel-title {
+	font-weight: bold;
+}
+
+/* 正文 */
+#text {
+	margin-bottom: 50px;
+	line-height: 1.7;
+}
+
+#text>p {
+	text-indent: 2em;
+}
+
+#text li>p {
+	margin-bottom: 0;
+}
+
+#text li {
+	margin: 5px 0;
+}
+
+#text img {
+	max-width: 100%;
+	margin-left: -2em;
+}
+
+/* text h标签 */
+#text h2,
+#text h3,
+#text h4,
+#text h5,
+#text h6 {
+	color: #ba3925;
+	font-weight: bold;
+}
+
+#text h2 {
+	font-size: 24px !important;
+}
+
+#text h3 {
+	font-size: 20px !important;
+}
+
+#text h3,
+#text h2 {
+	margin: 1.4em 0 1.1em;
+}
+
+#text h2 {
+	text-align: center;
+	color: black;
+	background: linear-gradient(#fff 60%, #cf4029 40%);
+}
+
+#text h3 {
+	border-left: 4px solid #ba3925;
+	padding-left: 6px;
+}
+
+
+/* 代码不换行 */
+pre code {
+	white-space: pre;
+}
+
+/* 文章目录 */
+#post-toc {
+	/* display: none; */
+	max-width: 263px;
+}
+
+#post-toc ul {
+	list-style: none;
+	padding-left: 0px;
+}
+
+#post-toc li>ul {
+	padding-left: 20px;
+}
+
+#post-toc li>a {
+	padding-left: 20px;
+}
+
+#post-toc li.active>a {
+	padding-left: 18px;
+	font-weight: 700;
+	color: #ba3925;
+	background-color: transparent;
+	border-left: 2px solid #ba3925;
+}
+
+
+
+.affix {
+	top: 100px;
+}
+
+
+/* 标签 */
+.tags {
+	position: relative;
+	padding: 0;
+}
+
+.tags:after {
+	content: " ";
+	display: block;
+	clear: both;
+}
+
+.tags li {
+	list-style-type: none;
+	float: left;
+	margin-left: 20px;
+	margin-top: 10px;
+}
+
+.tags li a {
+	display: block;
+	text-decoration: none;
+	font-size: 12px;
+	color: #fff;
+	background-color: #0089e0;
+	height: 24px;
+	line-height: 24px;
+	padding: 0 10px 0 12px;
+	position: relative;
+	border-radius: 0 5px 5px 0;
+}
+
+.tags li a:hover {
+	background-color: #666;
+}
+
+.tags li a::before {
+	content: " ";
+	width: 0px;
+	height: 0px;
+	position: absolute;
+	top: 0;
+	left: -24px;
+	border: 12px solid transparent;
+	border-right-color: #0089e0;
+}
+
+.tags li a:hover::before {
+	border-color: transparent #666 transparent transparent;
+}
+
+.tags li a::after {
+	content: " ";
+	width: 4px;
+	height: 4px;
+	background-color: #fff;
+	border-radius: 4px;
+	box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, .3);
+	position: absolute;
+	top: 10px;
+	left: 3px;
+}
