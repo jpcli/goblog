@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"goblog/service"
 	"goblog/utils/markdown"
+	"goblog/utils/option"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,7 +29,7 @@ func DispPost(c *gin.Context) {
 	HTMLOK(c, "disp-post.html", gin.H{
 		"post": post,
 	}, &tkd{
-		Title:       fmt.Sprintf("%s - 追风寻逸", post.Title),
+		Title:       fmt.Sprintf("%s - %s", post.Title, option.GetWebsiteName()),
 		Description: post.Excerpt,
 		Keywords:    post.Keywords,
 	})

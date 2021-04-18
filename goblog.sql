@@ -90,4 +90,23 @@ CREATE TABLE `terms`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 
+-- ----------------------------
+-- Table structure for options
+-- ----------------------------
+DROP TABLE IF EXISTS `options`;
+CREATE TABLE `options`  (
+  `optionKey` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `optionValue` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`optionKey`) USING BTREE,
+  UNIQUE INDEX `optionKey`(`optionKey`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of options
+-- ----------------------------
+INSERT INTO `options` VALUES ('eachPageLimit', '10');
+INSERT INTO `options` VALUES ('pageNavLimit', '7');
+INSERT INTO `options` VALUES ('websiteName', '追风寻逸');
+INSERT INTO `options` VALUES ('websiteURL', 'https://www.jpcli.top');
+
 SET FOREIGN_KEY_CHECKS = 1;

@@ -62,7 +62,7 @@ func (u *url) setLastmod(lastmod string) *url {
 
 func (s *Service) GetSitemap() (string, *DispError) {
 	URLset := newURLset()
-	website := option.WebsiteURL()
+	website := option.GetWebsiteURL()
 	pages := []string{"archives", "declaration"}
 
 	posts := s.repository.GetPostList("pid, modified", 0, math.MaxUint32)

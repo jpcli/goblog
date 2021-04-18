@@ -1,0 +1,144 @@
+{{ define "include" }}
+
+<div class="layui-card">
+	<div class="layui-card-header">博客配置</div>
+	<div class="layui-card-body">
+		<form class="layui-form" lay-filter="form" action="">
+			<blockquote class="layui-elem-quote">网站配置</blockquote>
+			<div class="layui-form-item">
+				<label class="layui-form-label">博客名</label>
+				<div class="layui-input-block">
+					<input type="text" name="websiteName" required lay-verify="required" autocomplete="off"
+						class="layui-input">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">博客链接</label>
+				<div class="layui-input-block">
+					<input type="text" name="websiteURL" required placeholder="例子: https://www.jpcli.top"
+						lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+
+
+			<blockquote class="layui-elem-quote">列表页配置</blockquote>
+			<div class="layui-form-item">
+				<label class="layui-form-label">每页文章数</label>
+				<div class="layui-input-block">
+					<input type="text" name="eachPageLimit" id="slug" required lay-verify="required|number"
+						autocomplete="off" class="layui-input">
+				</div>
+			</div>
+
+			<div class="layui-form-item layui-form-text">
+				<label class="layui-form-label">显示页数</label>
+				<div class="layui-input-block">
+					<input type="text" name="pageNavLimit" id="slug" required lay-verify="required|number"
+						autocomplete="off" class="layui-input">
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="form-submit">立即提交</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+
+
+
+<script>
+	canSubmit = true
+
+	layui.use(['form'], function() {
+		form = layui.form;
+
+		// 监听提交
+		form.on('submit(form-submit)', function(data) {
+			if (!canSubmit) {
+				layer.msg('正在提交中，请稍后', {
+					icon: 2,
+					time: 1000
+				});
+				return false
+			}
+
+			// 提交修改请求
+			let d = data.field
+			d.eachPageLimit = parseInt(d.eachPageLimit)
+			d.pageNavLimit = parseInt(d.pageNavLimit)
+			modifyOption(d)
+
+			// 不跳转
+			return false;
+		});
+
+		getOption()
+
+	});
+
+	function getOption() {
+		fetch(`../api/getWebsiteBasicOption`, {
+				method: "POST"
+			})
+			.then(res => {
+				return res.json()
+			})
+			.then(res => {
+				if (res.code) {
+					layer.msg(`错误：${res.msg}`, {
+						icon: 2,
+					});
+					return
+				}
+
+				// 表单赋值
+				form.val("form", {
+					"websiteURL": res.data.websiteURL,
+					"websiteName": res.data.websiteName,
+					"eachPageLimit": res.data.eachPageLimit,
+					"pageNavLimit": res.data.pageNavLimit,
+				});
+			})
+	}
+
+	function modifyOption(data) {
+		// lock
+		canSubmit = false
+
+		fetch(`../api/modifyWebsiteBasicOption`, {
+				method: "POST",
+				headers: new Headers({
+					'Accept': 'application/json' // 通过头指定，获取的数据类型是JSON
+				}),
+				body: JSON.stringify(data)
+			})
+			.then(res => {
+				return res.json()
+			})
+			.then(res => {
+				if (!res.code) {
+					layer.msg('提交成功', {
+						icon: 1,
+						time: 1000
+					});
+				} else {
+					// 修改失败
+					layer.msg(`错误：${res.msg}`, {
+						icon: 2
+					});
+				}
+
+				// unlock
+				canSubmit = true
+			})
+	}
+</script>
+
+
+{{ end }}

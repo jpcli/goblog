@@ -10,6 +10,7 @@ import (
 func AppStart(addr string) {
 	// gin.SetMode(gin.ReleaseMode)
 
+	gin.DisableConsoleColor()
 	r := gin.Default()
 	r.Static("/static/", "./static/")
 	r.HTMLRender = loadTemplates()

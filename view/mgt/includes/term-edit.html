@@ -94,7 +94,7 @@
 			})
 			.then(res => {
 				if (res.code) {
-					layer.msg(`错误：${res.err}`, {
+					layer.msg(`错误：${res.msg}`, {
 						icon: 2,
 						end: function() {
 							// 关闭当前弹出窗口
@@ -146,7 +146,7 @@
 					});
 				} else {
 					// 修改失败
-					layer.msg(`错误：${res.err}`, {
+					layer.msg(`错误：${res.msg}`, {
 						icon: 2
 					});
 				}

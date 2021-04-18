@@ -2,12 +2,14 @@ package config
 
 import (
 	"encoding/json"
+	"github.com/spf13/cast"
 	"goblog/utils/errors"
 	"io/ioutil"
 )
 
 type configSet struct {
 	db    `json:"db"`
+	redis `json:"redis"`
 	app   `json:"app"`
 	oauth `json:"oauth"`
 	jwt   `json:"jwt"`
@@ -15,12 +17,17 @@ type configSet struct {
 
 type db struct {
 	IP       string `json:"ip"`
-	Port     string `json:"port"`
+	Port     int    `json:"port"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Database string `json:"database"`
 }
-
+type redis struct {
+	IP       string `json:"ip"`
+	Port     int    `json:"port"`
+	Password string `json:"password"`
+	DB       int    `json:"db"`
+}
 type app struct {
 	Address string `json:"address"`
 	MgtURI  string `json:"mgt_uri"`
@@ -60,10 +67,14 @@ func LoadConfig() {
 
 // DBConfig returns database config.
 func DBConfig() (ip, port, usr, pwd, db string) {
-	return config.db.IP, config.db.Port, config.db.Username, config.db.Password, config.db.Database
+	return config.db.IP, cast.ToString(config.db.Port), config.db.Username, config.db.Password, config.db.Database
 }
 
-func AppAdress() string {
+func RedisConfig() (ip, port, pwd string, db int) {
+	return config.redis.IP, cast.ToString(config.redis.Port), config.redis.Password, config.redis.DB
+}
+
+func AppAddress() string {
 	return config.app.Address
 }
 func AppMgtURI() string {

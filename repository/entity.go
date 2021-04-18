@@ -57,3 +57,8 @@ type Attachment struct {
 	Created      uint32 `db:"created"`
 	RelativePath string `db:"relativePath"`
 }
+
+type Option struct {
+	OptionKey   string `db:"optionKey"`
+	OptionValue string `db:"optionValue"`
+}

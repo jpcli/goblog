@@ -25,6 +25,9 @@ func mgtAPI(r *gin.Engine) {
 	api.POST("/editTerm", handler.EditTermAPI)
 
 	api.POST("/upload", handler.UploadAPI)
+
+	api.POST("/getWebsiteBasicOption", handler.GetWebsiteBasicOptionAPI)
+	api.POST("/modifyWebsiteBasicOption", handler.ModifyWebsiteBasicOptionAPI)
 }
 
 func mgtWeb(r *gin.Engine) {

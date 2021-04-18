@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"goblog/service"
 	"goblog/utils/errors"
+	"goblog/utils/option"
 	"log"
 	"net/http"
 	"regexp"
@@ -50,6 +51,8 @@ func HTMLOK(c *gin.Context, name string, data gin.H, tkd *tkd) {
 	count, _ := s.CountPost()
 	data["postNum"] = count
 	data["lastModified"] = s.GetLastModified()
+	data["websiteName"] = option.GetWebsiteName()
+	data["websiteURL"] = option.GetWebsiteURL()
 
 	c.HTML(http.StatusOK, name, data)
 }

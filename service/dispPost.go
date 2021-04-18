@@ -151,7 +151,7 @@ func (s *Service) GetDispPostList(page, limit uint32) ([]DispPostli, *PageNav, *
 		return nil, nil, NewDispError(ErrorServer, err)
 	}
 
-	pageNav, e := getPageNav(count, page, limit, option.PageNavLimit())
+	pageNav, e := getPageNav(count, page, limit, option.GetPageNavLimit())
 
 	return posts, pageNav, e
 }
@@ -171,7 +171,7 @@ func (s *Service) GetDispPostListBySlug(metaType, slug string, page, limit uint3
 		return nil, nil, nil, e
 	}
 
-	pageNav, e := getPageNav(t.Count, page, limit, option.PageNavLimit())
+	pageNav, e := getPageNav(t.Count, page, limit, option.GetPageNavLimit())
 
 	return posts, pageNav, t, e
 }

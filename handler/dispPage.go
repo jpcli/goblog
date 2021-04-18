@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"fmt"
 	"goblog/service"
+	"goblog/utils/option"
 	"net/http"
 	"strings"
 
@@ -22,9 +24,9 @@ func Sitemap(c *gin.Context) {
 
 func Declaration(c *gin.Context) {
 	HTMLOK(c, "disp-declaration.html", gin.H{}, &tkd{
-		Title:       "网站声明 - 追风寻逸",
-		Description: "追风寻逸网站声明",
-		Keywords:    strings.Join([]string{"网站声明", "追风寻逸"}, ","),
+		Title:       fmt.Sprintf("网站声明 - %s", option.GetWebsiteName()),
+		Description: fmt.Sprintf("%s网站声明", option.GetWebsiteName()),
+		Keywords:    strings.Join([]string{"网站声明", option.GetWebsiteName()}, ","),
 	})
 }
 
@@ -39,8 +41,8 @@ func Archives(c *gin.Context) {
 	HTMLOK(c, "disp-archives.html", gin.H{
 		"archives": archives,
 	}, &tkd{
-		Title:       "文章归档 - 追风寻逸",
-		Description: "追风寻逸所有文章归档",
-		Keywords:    strings.Join([]string{"文章归档", "追风寻逸"}, ","),
+		Title:       fmt.Sprintf("文章归档 - %s", option.GetWebsiteName()),
+		Description: fmt.Sprintf("%s所有文章归档", option.GetWebsiteName()),
+		Keywords:    strings.Join([]string{"文章归档", option.GetWebsiteName()}, ","),
 	})
 }

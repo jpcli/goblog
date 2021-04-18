@@ -19,7 +19,7 @@ func DispIndexPostList(c *gin.Context) {
 
 	s := service.NewService()
 
-	postList, pageNav, e := s.GetDispPostList(page, option.EachPageLimit())
+	postList, pageNav, e := s.GetDispPostList(page, option.GetEachPageLimit())
 	if e != nil {
 		handleServiceError(c, e)
 		return
@@ -30,9 +30,9 @@ func DispIndexPostList(c *gin.Context) {
 	// TODO: tkd设置在option里
 	var title string
 	if page == 1 {
-		title = "追风寻逸 - 分享生活，创造智慧！"
+		title = fmt.Sprintf("%s - 分享生活，创造智慧！", option.GetWebsiteName())
 	} else {
-		title = fmt.Sprintf("第%d页 - 文章列表 - 追风寻逸", page)
+		title = fmt.Sprintf("第%d页 - 文章列表 - %s", page, option.GetWebsiteName())
 	}
 
 	HTMLOK(c, "disp-post-list.html", gin.H{
@@ -40,8 +40,8 @@ func DispIndexPostList(c *gin.Context) {
 		"pageNavInfo": pageNav,
 	}, &tkd{
 		Title:       title,
-		Description: "追风寻逸是一个分享生活与技术、创造智慧的个人笔记博客",
-		Keywords:    strings.Join([]string{"网页前端", "Web后端", "Python", "技术分享", "追风寻逸"}, ","),
+		Description: fmt.Sprintf("%s是一个分享生活与技术、创造智慧的个人笔记博客", option.GetWebsiteName()),
+		Keywords:    strings.Join([]string{"网页前端", "Web后端", "Python", "技术分享", option.GetWebsiteName()}, ","),
 	})
 }
 
@@ -55,7 +55,7 @@ func DispCategoryPostList(c *gin.Context) {
 	s := service.NewService()
 
 	slug := c.Param("slug")
-	postList, pageNav, term, e := s.GetDispPostListBySlug(repository.TermTypeCategory, slug, page, option.EachPageLimit())
+	postList, pageNav, term, e := s.GetDispPostListBySlug(repository.TermTypeCategory, slug, page, option.GetEachPageLimit())
 	if e != nil {
 		handleServiceError(c, e)
 		return
@@ -65,9 +65,9 @@ func DispCategoryPostList(c *gin.Context) {
 
 	var title string
 	if page == 1 {
-		title = fmt.Sprintf("%s - 分类 - 追风寻逸", term.Name)
+		title = fmt.Sprintf("%s - 分类 - %s", term.Name, option.GetWebsiteName())
 	} else {
-		title = fmt.Sprintf("%s - 第%d页 - 分类 - 追风寻逸", term.Name, page)
+		title = fmt.Sprintf("%s - 第%d页 - 分类 - %s", term.Name, page, option.GetWebsiteName())
 	}
 
 	HTMLOK(c, "disp-post-list.html", gin.H{
@@ -76,7 +76,7 @@ func DispCategoryPostList(c *gin.Context) {
 	}, &tkd{
 		Title:       title,
 		Description: term.Description,
-		Keywords:    strings.Join([]string{term.Name, "追风寻逸"}, ","),
+		Keywords:    strings.Join([]string{term.Name, option.GetWebsiteName()}, ","),
 	})
 }
 
@@ -90,7 +90,7 @@ func DispTagPostList(c *gin.Context) {
 	s := service.NewService()
 
 	slug := c.Param("slug")
-	postList, pageNav, term, e := s.GetDispPostListBySlug(repository.TermTypeTag, slug, page, option.EachPageLimit())
+	postList, pageNav, term, e := s.GetDispPostListBySlug(repository.TermTypeTag, slug, page, option.GetEachPageLimit())
 	if e != nil {
 		handleServiceError(c, e)
 		return
@@ -100,9 +100,9 @@ func DispTagPostList(c *gin.Context) {
 
 	var title string
 	if page == 1 {
-		title = fmt.Sprintf("%s - 标签 - 追风寻逸", term.Name)
+		title = fmt.Sprintf("%s - 标签 - %s", term.Name, option.GetWebsiteName())
 	} else {
-		title = fmt.Sprintf("%s - 第%d页 - 标签 - 追风寻逸", term.Name, page)
+		title = fmt.Sprintf("%s - 第%d页 - 标签 - %s", term.Name, page, option.GetWebsiteName())
 	}
 
 	HTMLOK(c, "disp-post-list.html", gin.H{
@@ -111,6 +111,6 @@ func DispTagPostList(c *gin.Context) {
 	}, &tkd{
 		Title:       title,
 		Description: term.Description,
-		Keywords:    strings.Join([]string{term.Name, "追风寻逸"}, ","),
+		Keywords:    strings.Join([]string{term.Name, option.GetWebsiteName()}, ","),
 	})
 }
