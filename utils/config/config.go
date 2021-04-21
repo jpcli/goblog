@@ -2,9 +2,10 @@ package config
 
 import (
 	"encoding/json"
-	"github.com/spf13/cast"
 	"goblog/utils/errors"
 	"io/ioutil"
+
+	"github.com/spf13/cast"
 )
 
 type configSet struct {
@@ -31,6 +32,7 @@ type redis struct {
 type app struct {
 	Address string `json:"address"`
 	MgtURI  string `json:"mgt_uri"`
+	LogFile string `json:"log_file"`
 }
 type jwt struct {
 	Issuer string `json:"issuer"`
@@ -79,6 +81,9 @@ func AppAddress() string {
 }
 func AppMgtURI() string {
 	return config.app.MgtURI
+}
+func AppLogFile() string {
+	return config.app.LogFile
 }
 
 func OauthAdmin() string {

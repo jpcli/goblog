@@ -14,7 +14,8 @@
     },
     "app": {
         "address": ":8080",
-        "mgt_uri": "/admin/fDBD9ryVscjdXXo4"
+        "mgt_uri": "/admin/fDBD9ryVscjdXXo4",
+        "log_file": "./err.log"
     },
     "jwt": {
         "issuer": "发行人",

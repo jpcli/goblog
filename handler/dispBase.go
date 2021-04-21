@@ -3,9 +3,8 @@ package handler
 import (
 	"fmt"
 	"goblog/service"
-	"goblog/utils/errors"
+	"goblog/utils/log"
 	"goblog/utils/option"
-	"log"
 	"net/http"
 	"regexp"
 
@@ -15,14 +14,12 @@ import (
 
 func HTMLNotFound(c *gin.Context, err error) {
 	c.HTML(http.StatusNotFound, "disp-404.html", gin.H{})
-	//TODO:写日志
-	log.Println(errors.SprintError(err))
+	log.Print(err.Error())
 }
 
 func HTMLServerError(c *gin.Context, err error) {
 	c.HTML(http.StatusInternalServerError, "disp-500.html", gin.H{})
-	//TODO:写日志
-	log.Println(errors.SprintError(err))
+	log.Print(err.Error())
 }
 
 func handleServiceError(c *gin.Context, e *service.DispError) {
