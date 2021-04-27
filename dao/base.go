@@ -28,6 +28,7 @@ type conn struct {
 type Dao struct {
 	c    *conn
 	post *postDao
+	term *termDao
 }
 
 func NewDao() *Dao {
