@@ -31,6 +31,7 @@ type Dao struct {
 	term *termDao
 	rela *relaDao
 	atta *attaDao
+	opt  *optDao
 }
 
 func NewDao() *Dao {

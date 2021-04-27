@@ -95,10 +95,9 @@ CREATE TABLE `terms`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `options`;
 CREATE TABLE `options`  (
-  `optionKey` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `optionValue` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`optionKey`) USING BTREE,
-  UNIQUE INDEX `optionKey`(`optionKey`) USING BTREE
+  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`name`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
