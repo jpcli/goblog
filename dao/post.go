@@ -47,18 +47,11 @@ func (p *postDao) GetByID(id uint32) (*model.Post, bool) {
 }
 
 // 根据文章类型获取文章列表
-func (p *postDao) ListByStatus(status model.PostStatusType, desc bool, pi, ps uint32) ([]model.Post, bool) {
+func (p *postDao) ListByStatus(status model.PostStatusType, pi, ps uint32) ([]model.Post, bool) {
 	var postList []model.Post
 	has := true
 
-	var query string
-	if desc {
-		query = "SELECT * FROM posts WHERE status = ? ORDER BY pid DESC LIMIT ?, ?"
-	} else {
-		query = "SELECT * FROM posts WHERE status = ? LIMIT ?, ?"
-	}
-
-	err := p.c.Select(&postList, query, status, (pi-1)*ps, ps)
+	err := p.c.Select(&postList, "SELECT * FROM posts WHERE status = ? ORDER BY pid DESC LIMIT ?, ?", status, (pi-1)*ps, ps)
 	panicExistError(err)
 
 	if len(postList) == 0 {
