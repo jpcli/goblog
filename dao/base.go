@@ -30,6 +30,7 @@ type Dao struct {
 	post *postDao
 	term *termDao
 	rela *relaDao
+	atta *attaDao
 }
 
 func NewDao() *Dao {
