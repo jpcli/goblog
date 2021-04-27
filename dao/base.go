@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -25,7 +26,8 @@ type conn struct {
 }
 
 type Dao struct {
-	c *conn
+	c    *conn
+	post *postDao
 }
 
 func NewDao() *Dao {
@@ -38,6 +40,7 @@ func NewDao() *Dao {
 
 // 为conn封装sqlx操作，用于控制执行的连接是db还是tx
 // ------conn方法定义开始------
+
 func (c *conn) Get(dest interface{}, query string, args ...interface{}) error {
 	if c.tx != nil {
 		return c.tx.Get(dest, query, args...)
@@ -59,6 +62,14 @@ func (c *conn) Exec(query string, args ...interface{}) (sql.Result, error) {
 		return c.tx.Exec(query, args...)
 	} else {
 		return c.db.Exec(query, args...)
+	}
+}
+
+func (c *conn) NamedExec(query string, arg interface{}) (sql.Result, error) {
+	if c.tx != nil {
+		return c.tx.NamedExec(query, arg)
+	} else {
+		return c.db.NamedExec(query, arg)
 	}
 }
 
@@ -96,3 +107,19 @@ func (c *conn) Rollback() error {
 }
 
 // ------conn方法定义结束------
+
+// 比较影响的行数，相同返回真，不相同返回假
+func cmpRowsAffected(res sql.Result, expected int64) bool {
+	ok := true
+	if affected, _ := res.RowsAffected(); affected != expected {
+		ok = false
+	}
+	return ok
+}
+
+// 如果Error不为nil，则panic
+func panicExistError(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
