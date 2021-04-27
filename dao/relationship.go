@@ -19,14 +19,14 @@ func (d *Dao) Rela() *relaDao {
 // 新增一条关系
 func (r *relaDao) Add(rela *model.Relationship) bool {
 	res, err := r.c.NamedExec("INSERT INTO relationships(pid, tid) VALUES(:pid, :tid)", rela)
-	panicExistError(err)
+	r.c.panicExistError(err)
 	return cmpRowsAffected(res, 1)
 }
 
 // 删除文章ID对应所有关系
 func (r *relaDao) RemoveByPostID(id uint32) bool {
 	res, err := r.c.Exec("DELETE FROM relationships WHERE pid = ?", id)
-	panicExistError(err)
+	r.c.panicExistError(err)
 	affected, _ := res.RowsAffected()
 	return affected > 0
 }

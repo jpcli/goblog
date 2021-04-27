@@ -41,7 +41,7 @@ func (p *postDao) GetByID(id uint32) (*model.Post, bool) {
 	if err == sql.ErrNoRows {
 		has = false
 	} else {
-		panicExistError(err)
+		p.c.panicExistError(err)
 	}
 	return &post, has
 }
@@ -52,7 +52,7 @@ func (p *postDao) ListByStatus(status model.PostStatusType, pi, ps uint32) ([]mo
 	has := true
 
 	err := p.c.Select(&postList, "SELECT * FROM posts WHERE status = ? ORDER BY pid DESC LIMIT ?, ?", status, (pi-1)*ps, ps)
-	panicExistError(err)
+	p.c.panicExistError(err)
 
 	if len(postList) == 0 {
 		has = false
@@ -78,7 +78,7 @@ func (p *postDao) ListByTermID(id, pi, ps uint32) ([]model.Post, bool) {
 		model.POST_STATUS_PUBLISH, model.POST_STATUS_STICKY,
 	)
 	err := p.c.Select(&PostList, query, id, (pi-1)*ps, ps)
-	panicExistError(err)
+	p.c.panicExistError(err)
 
 	if len(PostList) == 0 {
 		has = false
@@ -93,7 +93,7 @@ func (p *postDao) Add(post *model.Post) (uint32, bool) {
 		VALUES(:title, :created, :modified, :excerpt, :keywords, :text, :status, :commentCount, :commentAllow)`,
 		post,
 	)
-	panicExistError(err)
+	p.c.panicExistError(err)
 
 	id, _ := res.LastInsertId()
 	ok := cmpRowsAffected(res, 1)
@@ -106,7 +106,7 @@ func (p *postDao) Modify(post *model.Post) bool {
 		"UPDATE posts SET title=:title, modified=:modified, excerpt=:excerpt, keywords=:keyword, text=:text, commentAllow=:commentAllow WHERE pid=:pid",
 		post,
 	)
-	panicExistError(err)
+	p.c.panicExistError(err)
 
 	return cmpRowsAffected(res, 1)
 }
@@ -114,7 +114,7 @@ func (p *postDao) Modify(post *model.Post) bool {
 // 修改文章状态
 func (p *postDao) ModifyStatus(id uint32, status model.PostStatusType) bool {
 	res, err := p.c.Exec("UPDATE posts SET status = ? WHERE pid = ?", status, id)
-	panicExistError(err)
+	p.c.panicExistError(err)
 
 	return cmpRowsAffected(res, 1)
 }
@@ -123,7 +123,7 @@ func (p *postDao) ModifyStatus(id uint32, status model.PostStatusType) bool {
 func (p *postDao) CountByStatus(status model.PostStatusType) uint32 {
 	var count uint32 = 0
 	err := p.c.Get(&count, "SELECT COUNT(*) FROM posts WHERE status = ?", status)
-	panicExistError(err)
+	p.c.panicExistError(err)
 
 	return count
 }
@@ -132,7 +132,7 @@ func (p *postDao) CountByStatus(status model.PostStatusType) uint32 {
 func (p *postDao) GetLastModified() uint32 {
 	var lastModified uint32 = 0
 	err := p.c.Get(&lastModified, "SELECT modified FROM posts ORDER BY modified LIMIT 1")
-	panicExistError(err)
+	p.c.panicExistError(err)
 
 	return lastModified
 }
@@ -144,7 +144,7 @@ func (m *postmetaDao) GetByKey(id uint32, key string) string {
 	if err == sql.ErrNoRows {
 		return ""
 	} else {
-		panicExistError(err)
+		m.c.panicExistError(err)
 	}
 	return value
 }
@@ -152,7 +152,7 @@ func (m *postmetaDao) GetByKey(id uint32, key string) string {
 // 新增文章元数据
 func (m *postmetaDao) Add(id uint32, key, value string) bool {
 	res, err := m.c.Exec("INSERT INTO postmeta(pid, metaKey, metaValue) VALUES(?, ?, ?)", id, key, value)
-	panicExistError(err)
+	m.c.panicExistError(err)
 
 	return cmpRowsAffected(res, 1)
 }
@@ -160,7 +160,7 @@ func (m *postmetaDao) Add(id uint32, key, value string) bool {
 // 修改文章元数据
 func (m *postmetaDao) Modify(id uint32, key, value string) bool {
 	res, err := m.c.Exec("UPDATE postmeta SET metaValue = ? WHERE pid = ? and metaKey = ?", value, id, key)
-	panicExistError(err)
+	m.c.panicExistError(err)
 
 	return cmpRowsAffected(res, 1)
 }

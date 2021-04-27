@@ -26,7 +26,7 @@ func (o *optDao) GetByName(name string) (string, bool) {
 	if err == sql.ErrNoRows {
 		has = false
 	} else {
-		panicExistError(err)
+		o.c.panicExistError(err)
 	}
 	return value, has
 }
@@ -34,6 +34,6 @@ func (o *optDao) GetByName(name string) (string, bool) {
 // 修改选项
 func (o *optDao) Modify(opt *model.Option) bool {
 	res, err := o.c.NamedExec("UPDATE options SET value=:value WHERE name=:name", opt)
-	panicExistError(err)
+	o.c.panicExistError(err)
 	return cmpRowsAffected(res, 1)
 }

@@ -26,7 +26,7 @@ func (t *termDao) GetByID(id uint32) (*model.Term, bool) {
 	if err == sql.ErrNoRows {
 		has = false
 	} else {
-		panicExistError(err)
+		t.c.panicExistError(err)
 	}
 	return &term, has
 }
@@ -38,7 +38,7 @@ func (t *termDao) GetBySlug(slug string) (*model.Term, bool) {
 	if err == sql.ErrNoRows {
 		has = false
 	} else {
-		panicExistError(err)
+		t.c.panicExistError(err)
 	}
 	return &term, has
 }
@@ -56,7 +56,7 @@ func (t *termDao) ListByType(termType string, desc bool, pi, ps uint32) ([]model
 	}
 
 	err := t.c.Select(&termList, query, termType, (pi-1)*ps, ps)
-	panicExistError(err)
+	t.c.panicExistError(err)
 	if len(termList) == 0 {
 		has = false
 	}
@@ -74,7 +74,7 @@ func (t *termDao) ListByPostID(id uint32, termType model.TermType) ([]model.Term
 		) and type = ?`,
 		id, termType,
 	)
-	panicExistError(err)
+	t.c.panicExistError(err)
 
 	if len(termList) == 0 {
 		has = false
@@ -85,7 +85,7 @@ func (t *termDao) ListByPostID(id uint32, termType model.TermType) ([]model.Term
 // 新增项
 func (t *termDao) Add(term *model.Term) (uint32, bool) {
 	res, err := t.c.NamedExec("INSERT INTO terms(name, slug, type, description, count) VALUES(:name, :slug, :type, :description, :count)", term)
-	panicExistError(err)
+	t.c.panicExistError(err)
 
 	id, _ := res.LastInsertId()
 	ok := cmpRowsAffected(res, 1)
@@ -95,7 +95,7 @@ func (t *termDao) Add(term *model.Term) (uint32, bool) {
 // 修改项
 func (t *termDao) Modify(term *model.Term) bool {
 	res, err := t.c.NamedExec("UPDATE terms SET name=:name, description=:description WHERE tid=:tid", term)
-	panicExistError(err)
+	t.c.panicExistError(err)
 
 	return cmpRowsAffected(res, 1)
 }
@@ -104,6 +104,6 @@ func (t *termDao) Modify(term *model.Term) bool {
 func (t *termDao) CountByType(termType model.TermType) uint32 {
 	var count uint32 = 0
 	err := t.c.Get(&count, "SELECT COUNT(*) FROM terms WHERE type = ?", termType)
-	panicExistError(err)
+	t.c.panicExistError(err)
 	return count
 }

@@ -110,6 +110,16 @@ func (c *conn) Rollback() error {
 	return err
 }
 
+// 如果Error不为nil，则panic
+func (c *conn) panicExistError(err error) {
+	if err != nil {
+		if c.tx != nil {
+			c.Rollback()
+		}
+		panic(err)
+	}
+}
+
 // ------conn方法定义结束------
 
 // 比较影响的行数，相同返回真，不相同返回假
@@ -119,11 +129,4 @@ func cmpRowsAffected(res sql.Result, expected int64) bool {
 		ok = false
 	}
 	return ok
-}
-
-// 如果Error不为nil，则panic
-func panicExistError(err error) {
-	if err != nil {
-		panic(err)
-	}
 }

@@ -19,7 +19,7 @@ func (d *Dao) Atta() *attaDao {
 // 新增附件
 func (a *attaDao) Add(atta *model.Attachment) (uint32, bool) {
 	res, err := a.c.NamedExec("INSERT INTO attachments(created, relativePath) VALUES(:created, :relativePath)", atta)
-	panicExistError(err)
+	a.c.panicExistError(err)
 	id, _ := res.LastInsertId()
 	ok := cmpRowsAffected(res, 1)
 	return uint32(id), ok
