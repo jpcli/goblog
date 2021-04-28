@@ -18,3 +18,4 @@
 /static/layui/
 /config.json
 /.idea/
+*_test.go
