@@ -42,6 +42,18 @@ func NewDao() *Dao {
 	}
 }
 
+func (d *Dao) Begin() error {
+	return d.c.Begin()
+}
+
+func (d *Dao) Commit() error {
+	return d.c.Commit()
+}
+
+func (d *Dao) Rollback() error {
+	return d.c.Rollback()
+}
+
 // 为conn封装sqlx操作，用于控制执行的连接是db还是tx
 // ------conn方法定义开始------
 

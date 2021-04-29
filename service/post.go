@@ -1,0 +1,101 @@
+package service
+
+import (
+	"fmt"
+	"goblog/dao"
+	"goblog/model"
+	"goblog/model/request"
+	"time"
+
+	"github.com/spf13/cast"
+)
+
+func EditPost(req *request.Post) (uint32, error) {
+	dao := dao.NewDao()
+	var v bool
+
+	// 校验分类
+	cate, v := dao.Term().GetByID(req.CateID)
+	if !v || cate.Type != model.TERM_TYPE_CATEGORY {
+		return 0, fmt.Errorf("文章分类不存在")
+	}
+
+	// 校验标签
+	for _, tagID := range req.TagsID {
+		tag, v := dao.Term().GetByID(tagID)
+		if !v || tag.Type != model.TERM_TYPE_TAG {
+			return 0, fmt.Errorf("文章中有不存在的标签")
+		}
+	}
+
+	// 构造文章
+	var post *model.Post
+	now := cast.ToUint32(time.Now().Unix())
+	if req.ID > 0 {
+		var has bool
+		if post, has = dao.Post().GetByID(req.ID); !has {
+			return 0, fmt.Errorf("文章ID不存在")
+		}
+	} else {
+		post = &model.Post{
+			Created:      now,
+			CommentCount: 0,
+		}
+	}
+	post.Modified = now
+	post.Title = req.Title
+	post.Keywords = req.Keywords
+	post.Text = req.Text
+	if a := model.PostCommentAllowType(req.CommentAllow); a == model.POST_COMMENT_ALLOW || a == model.POST_COMMENT_DISALLOW {
+		post.CommentAllow = a
+	} else {
+		return 0, fmt.Errorf("文章评论类型非法")
+	}
+
+	// TODO 提取文章摘要
+
+	// 提交数据库
+	_ = dao.Begin()
+	if post.Pid == 0 {
+		post.Pid, v = dao.Post().Add(post)
+		if !v {
+			_ = dao.Rollback()
+			return 0, fmt.Errorf("新建文章失败")
+		}
+		v = dao.Post().Meta().Add(post.Pid, "post_view_count", "0")
+		if !v {
+			_ = dao.Rollback()
+			return 0, fmt.Errorf("新建文章附加字段失败")
+		}
+	} else {
+		v = dao.Post().Modify(post)
+		if !v {
+			_ = dao.Rollback()
+			return 0, fmt.Errorf("修改文章失败")
+		}
+	}
+
+	// 处理分类、标签关系
+	if post.Pid > 0 {
+		v = dao.Rela().RemoveByPostID(post.Pid)
+		if !v {
+			_ = dao.Rollback()
+			return 0, fmt.Errorf("删除旧关系失败")
+		}
+	}
+	tids := make([]uint32, 0, 1+len(req.TagsID))
+	tids = append(tids, req.CateID)
+	tids = append(tids, req.TagsID...)
+	v = dao.Rela().AddMore(post.Pid, tids...)
+	if !v {
+		_ = dao.Rollback()
+		return 0, fmt.Errorf("建立新关系失败")
+	}
+
+	// 提交更改
+	err := dao.Commit()
+	if err != nil {
+		return 0, fmt.Errorf("提交事务失败")
+	}
+	return post.Pid, nil
+}
