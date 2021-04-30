@@ -8,7 +8,7 @@ import (
 
 func apiRouter(r *gin.RouterGroup) {
 	r.POST("/post/detail", controller.PostAdd)               // 新增文章
-	r.GET("/post/detail/:id")                                // 获取文章
+	r.GET("/post/detail/:id", controller.PostGet)            // 获取文章
 	r.PUT("/post/detail/:id", controller.PostModify)         // 修改文章
 	r.PATCH("/post/status/:id", controller.PostStatusModify) // 修改文章状态
 	r.DELETE("/post/:id")                                    // 删除文章（软删除）

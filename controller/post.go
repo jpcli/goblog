@@ -77,3 +77,28 @@ func PostStatusModify(c *gin.Context) {
 		"status": p.Status,
 	}, "修改文章类型成功")
 }
+
+func PostGet(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		apiErrorInput(c)
+		return
+	}
+
+	post, err := service.GetPost(uint32(id))
+	if err != nil {
+		apiFailed(c, err.Error())
+		return
+	}
+	cateID, tagsID, err := service.GetPostCateTags(uint32(id))
+	if err != nil {
+		apiFailed(c, err.Error())
+		return
+	}
+
+	apiOK(c, gin.H{
+		"post":        post,
+		"category_id": cateID,
+		"tags_id":     tagsID,
+	}, "获取文章成功")
+}

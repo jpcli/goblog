@@ -130,3 +130,33 @@ func ModifyPostStatus(req *request.PostStatusModify) error {
 
 	return nil
 }
+
+func GetPost(id uint32) (*model.Post, error) {
+	dao := dao.NewDao()
+	// 获取文章
+	post, v := dao.Post().GetByID(id)
+	if !v {
+		return nil, fmt.Errorf("文章不存在")
+	}
+	return post, nil
+}
+
+func GetPostCateTags(id uint32) (uint32, []uint32, error) {
+	dao := dao.NewDao()
+	// 获取分类项
+	cate, v := dao.Term().ListByPostID(id, model.TERM_TYPE_CATEGORY)
+	if !v {
+		return 0, nil, fmt.Errorf("获取分类失败")
+	}
+
+	// 获取标签项
+	tags, _ := dao.Term().ListByPostID(id, model.TERM_TYPE_TAG)
+
+	// 整理
+	cateID := cate[0].Tid
+	tagsID := make([]uint32, len(tags))
+	for i, val := range tags {
+		tagsID[i] = val.Tid
+	}
+	return cateID, tagsID, nil
+}
