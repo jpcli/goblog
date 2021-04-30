@@ -12,7 +12,7 @@ import (
 // 新建文章API控制器
 func PostAdd(c *gin.Context) {
 	post := request.Post{}
-	err := c.BindJSON(&post)
+	err := c.ShouldBindJSON(&post)
 	if err != nil {
 		apiErrorInput(c)
 		return
@@ -33,7 +33,7 @@ func PostAdd(c *gin.Context) {
 // 修改文章API控制器
 func PostModify(c *gin.Context) {
 	post := request.Post{}
-	err := c.BindJSON(&post)
+	err := c.ShouldBindJSON(&post)
 	if err != nil {
 		apiErrorInput(c)
 		return
@@ -59,7 +59,7 @@ func PostModify(c *gin.Context) {
 // 修改文章状态API控制器
 func PostStatusModify(c *gin.Context) {
 	p := request.PostStatusModify{}
-	err := c.BindJSON(&p)
+	err := c.ShouldBindJSON(&p)
 	if err != nil {
 		apiErrorInput(c)
 		return
