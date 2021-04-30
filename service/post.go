@@ -5,6 +5,7 @@ import (
 	"goblog/dao"
 	"goblog/model"
 	"goblog/model/request"
+	"math"
 	"time"
 
 	"github.com/spf13/cast"
@@ -133,7 +134,7 @@ func ModifyPostStatus(req *request.PostStatusModify) error {
 	return nil
 }
 
-// 获取单个文章，返回文章模型（不包含分类、标签）
+// 获取单个文章，返回文章（不包含分类、标签）
 func GetPost(id uint32) (*model.Post, error) {
 	dao := dao.NewDao()
 	// 获取文章
@@ -163,4 +164,31 @@ func GetPostCateTags(id uint32) (uint32, []uint32, error) {
 		tagsID[i] = val.Tid
 	}
 	return cateID, tagsID, nil
+}
+
+// 获取正常文章列表，返回类型为publish、sticky的文章列表（不包含分类、标签）
+func ListNormalPost(pi, ps uint32) ([]model.Post, error) {
+	dao := dao.NewDao()
+	var result []model.Post
+
+	// 获取结果列表
+	stickyCount := dao.Post().CountByStatus(model.POST_STATUS_STICKY)
+	if pi <= uint32(math.Floor(float64(stickyCount)/float64(ps))) {
+		// 全是置顶文章
+		result, _ = dao.Post().ListByStatus(model.POST_STATUS_STICKY, pi, ps)
+	} else if pi > uint32(math.Ceil(float64(stickyCount)/float64(ps))) {
+		// 全是publish文章
+		result, _ = dao.Post().ListByStatus(model.POST_STATUS_PUBLISH, pi, ps)
+	} else {
+		// 置顶与publish文章都有
+		result, _ = dao.Post().ListByStatus(model.POST_STATUS_STICKY, pi, ps)             // 按ps获取最后一页置顶文章
+		r2, _ := dao.Post().ListByStatus(model.POST_STATUS_PUBLISH, 1, pi*ps-stickyCount) // 获取当前页差的publish文章
+		result = append(result, r2...)
+	}
+
+	// 判断结果列表是否空
+	if len(result) == 0 {
+		return nil, fmt.Errorf("该页不存在文章")
+	}
+	return result, nil
 }

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"goblog/model/request"
 	"goblog/service"
 	"strconv"
@@ -105,4 +106,38 @@ func PostGet(c *gin.Context) {
 		"category_id": cateID,
 		"tags_id":     tagsID,
 	}, "获取文章成功")
+}
+
+// 正常文章列表API控制器，参数为?page=&limit=
+func PostListNormal(c *gin.Context) {
+	p := request.Pager{}
+	err := c.ShouldBindQuery(&p)
+	if err != nil {
+		apiErrorInput(c)
+		return
+	}
+
+	posts, err := service.ListNormalPost(p.Pi, p.Ps)
+	if err != nil {
+		apiFailed(c, err.Error())
+		return
+	}
+
+	res := make([]gin.H, 0, len(posts))
+	for i := range posts {
+		cateID, tagsID, err := service.GetPostCateTags(posts[i].Pid)
+		if err != nil {
+			apiFailed(c, fmt.Sprintf("[ID%d]%s", posts[i].Pid, err.Error()))
+			return
+		}
+		res = append(res, gin.H{
+			"post":        &posts[i],
+			"category_id": cateID,
+			"tags_id":     tagsID,
+		})
+	}
+
+	apiOK(c, gin.H{
+		"list": res,
+	})
 }
