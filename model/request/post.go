@@ -9,3 +9,8 @@ type Post struct {
 	CommentAllow uint32   `json:"comment_allow"`
 	Text         string   `json:"text"`
 }
+
+type PostStatusModify struct {
+	ID     uint32 `json:"id"`
+	Status uint32 `json:"status"`
+}

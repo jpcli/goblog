@@ -99,3 +99,34 @@ func EditPost(req *request.Post) (uint32, error) {
 	}
 	return post.Pid, nil
 }
+
+func ModifyPostStatus(req *request.PostStatusModify) error {
+	dao := dao.NewDao()
+	var v bool
+	// 校验文章是否存在
+	_, v = dao.Post().GetByID(req.ID)
+	if !v {
+		return fmt.Errorf("文章不存在")
+	}
+
+	// 校验文章类型是否合法
+	t := model.PostStatusType(req.Status)
+	if t != model.POST_STATUS_PUBLISH && t != model.POST_STATUS_STICKY && t != model.POST_STATUS_DELETED {
+		return fmt.Errorf("文章类型非法")
+	}
+
+	// 提交数据库
+	_ = dao.Begin()
+	v = dao.Post().ModifyStatus(req.ID, t)
+	if !v {
+		_ = dao.Rollback()
+		return fmt.Errorf("文章类型修改失败")
+	}
+
+	err := dao.Commit()
+	if err != nil {
+		return fmt.Errorf("事务提交失败")
+	}
+
+	return nil
+}
