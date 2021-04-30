@@ -6,11 +6,11 @@ type Post struct {
 	CateID       uint32   `json:"category_id"`
 	TagsID       []uint32 `json:"tags_id"`
 	Keywords     string   `json:"keywords"`
-	CommentAllow uint32   `json:"comment_allow"`
+	CommentAllow uint8    `json:"comment_allow"`
 	Text         string   `json:"text"`
 }
 
 type PostStatusModify struct {
 	ID     uint32 `json:"id"`
-	Status uint32 `json:"status"`
+	Status uint8  `json:"status"`
 }
