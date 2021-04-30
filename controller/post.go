@@ -52,7 +52,7 @@ func PostModify(c *gin.Context) {
 	}
 
 	apiOK(c, gin.H{
-		"id": id,
+		"id": post.ID,
 	}, "修改文章成功")
 }
 

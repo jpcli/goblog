@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cast"
 )
 
-// 修改文章，返回该文章ID（新建则为新文章ID，否则与输入一致）
+// 编辑文章，返回该文章ID（新建则为新文章ID，否则与输入一致）
 func EditPost(req *request.Post) (uint32, error) {
 	dao := dao.NewDao()
 	var v bool
