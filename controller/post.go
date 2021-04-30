@@ -112,7 +112,7 @@ func PostGet(c *gin.Context) {
 func PostListNormal(c *gin.Context) {
 	p := request.Pager{}
 	err := c.ShouldBindQuery(&p)
-	if err != nil {
+	if err != nil || p.Pi <= 0 || p.Ps <= 0 {
 		apiErrorInput(c)
 		return
 	}
