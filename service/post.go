@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cast"
 )
 
+// 修改文章，返回该文章ID（新建则为新文章ID，否则与输入一致）
 func EditPost(req *request.Post) (uint32, error) {
 	dao := dao.NewDao()
 	var v bool
@@ -100,6 +101,7 @@ func EditPost(req *request.Post) (uint32, error) {
 	return post.Pid, nil
 }
 
+// 修改文章状态
 func ModifyPostStatus(req *request.PostStatusModify) error {
 	dao := dao.NewDao()
 	var v bool
@@ -131,6 +133,7 @@ func ModifyPostStatus(req *request.PostStatusModify) error {
 	return nil
 }
 
+// 获取单个文章，返回文章模型（不包含分类、标签）
 func GetPost(id uint32) (*model.Post, error) {
 	dao := dao.NewDao()
 	// 获取文章
@@ -141,6 +144,7 @@ func GetPost(id uint32) (*model.Post, error) {
 	return post, nil
 }
 
+// 获取单个文章的分类、标签，返回分类ID、标签ID列表
 func GetPostCateTags(id uint32) (uint32, []uint32, error) {
 	dao := dao.NewDao()
 	// 获取分类项
