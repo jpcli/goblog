@@ -15,11 +15,11 @@ func apiRouter(r *gin.RouterGroup) {
 	r.GET("/post/list/normal", controller.PostListNormal)    // 获取正常文章列表
 	r.GET("/post/list/trash")                                // 获取回收站文章列表
 
-	r.POST("/term/detail")    // 新增项
-	r.GET("/term/detail/:id") // 获取项
-	r.PUT("/term/detail/:id") // 修改项
-	r.DELETE("/term/:id")     // 删除项
-	r.GET("/term/list")       // 获取项列表，参数?page=&limit=
+	r.POST("/term/detail", controller.TermAdd)       // 新增项
+	r.GET("/term/detail/:id", controller.TermGet)    // 获取项
+	r.PUT("/term/detail/:id", controller.TermModify) // 修改项
+	r.DELETE("/term/:id")                            // 删除项
+	r.GET("/term/list", controller.TermList)         // 获取项列表
 
 	r.POST("/upload") // 上传附件
 

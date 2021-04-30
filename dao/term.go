@@ -44,7 +44,7 @@ func (t *termDao) GetBySlug(slug string) (*model.Term, bool) {
 }
 
 // 获取项类型对应的项列表
-func (t *termDao) ListByType(termType string, desc bool, pi, ps uint32) ([]model.Term, bool) {
+func (t *termDao) ListByType(termType model.TermType, desc bool, pi, ps uint32) ([]model.Term, bool) {
 	var termList []model.Term
 	has := true
 
