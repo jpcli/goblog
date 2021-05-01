@@ -23,6 +23,6 @@ func apiRouter(r *gin.RouterGroup) {
 
 	r.POST("/upload", controller.Upload) // 上传附件
 
-	r.PUT("/option/base") // 修改基本配置（全修改）
-	r.GET("/option/base") // 获取基本配置
+	r.PUT("/option/base", controller.BaseOptionSet) // 修改基本配置（全修改）
+	r.GET("/option/base", controller.BaseOptionGet) // 获取基本配置
 }
