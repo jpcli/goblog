@@ -97,6 +97,7 @@ func EditPost(req *request.Post) (uint32, error) {
 	// 提交更改
 	err := dao.Commit()
 	if err != nil {
+		_ = dao.Rollback()
 		return 0, fmt.Errorf("提交事务失败")
 	}
 	return post.Pid, nil
@@ -128,7 +129,8 @@ func ModifyPostStatus(req *request.PostStatusModify) error {
 
 	err := dao.Commit()
 	if err != nil {
-		return fmt.Errorf("事务提交失败")
+		_ = dao.Rollback()
+		return fmt.Errorf("提交事务失败")
 	}
 
 	return nil

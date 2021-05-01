@@ -48,10 +48,12 @@ func AddAttachment(filename string) (string, error) {
 		RelativePath: savePath,
 	})
 	if !v {
+		_ = dao.Rollback()
 		return "", fmt.Errorf("新建附件失败")
 	}
 	err := dao.Commit()
 	if err != nil {
+		_ = dao.Rollback()
 		return "", fmt.Errorf("提交事务失败")
 	}
 

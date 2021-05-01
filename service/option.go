@@ -32,6 +32,7 @@ func SetOption(kvs map[string]string) error {
 	}
 	err := dao.Commit()
 	if err != nil {
+		_ = dao.Rollback()
 		return fmt.Errorf("提交事务失败")
 	}
 	return nil

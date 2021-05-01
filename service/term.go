@@ -59,6 +59,7 @@ func EditTerm(req *request.Term) (uint32, error) {
 	}
 	err := dao.Commit()
 	if err != nil {
+		_ = dao.Rollback()
 		return 0, fmt.Errorf("提交事务失败")
 	}
 	return term.Tid, nil
