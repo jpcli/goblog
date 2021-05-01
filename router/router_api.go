@@ -21,7 +21,7 @@ func apiRouter(r *gin.RouterGroup) {
 	r.DELETE("/term/:id")                            // 删除项
 	r.GET("/term/list", controller.TermList)         // 获取项列表
 
-	r.POST("/upload") // 上传附件
+	r.POST("/upload", controller.Upload) // 上传附件
 
 	r.PUT("/option/base") // 修改基本配置（全修改）
 	r.GET("/option/base") // 获取基本配置
