@@ -103,7 +103,7 @@ func (p *postDao) Add(post *model.Post) (uint32, bool) {
 // 修改文章
 func (p *postDao) Modify(post *model.Post) bool {
 	res, err := p.c.NamedExec(
-		"UPDATE posts SET title=:title, modified=:modified, excerpt=:excerpt, keywords=:keyword, text=:text, commentAllow=:commentAllow WHERE pid=:pid",
+		"UPDATE posts SET title=:title, modified=:modified, excerpt=:excerpt, keywords=:keywords, text=:text, commentAllow=:commentAllow WHERE pid=:pid",
 		post,
 	)
 	p.c.panicExistError(err)

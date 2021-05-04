@@ -92,3 +92,14 @@ func ListTerm(termType uint8, pi, ps uint32) ([]model.Term, error) {
 	}
 	return list, nil
 }
+
+// 统计项数量
+func CountTermByType(termType uint8) (uint32, error) {
+	// 校验项类型
+	t := model.TermType(termType)
+	if t != model.TERM_TYPE_CATEGORY && t != model.TERM_TYPE_TAG {
+		return 0, fmt.Errorf("项类型非法")
+	}
+
+	return dao.NewDao().Term().CountByType(t), nil
+}

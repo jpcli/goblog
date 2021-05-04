@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <title></title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sentsin/layui@v2.6.5/dist/css/layui.css" />
+        <script src="https://cdn.jsdelivr.net/gh/sentsin/layui@v2.6.5/dist/layui.js" type="text/javascript" charset="utf-8"></script>
+        <style>
+            body {
+                background-color: #f2f2f2;
+                padding: 15px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="layui-card">
+            <div class="layui-card-header">卡片面板</div>
+            <div class="layui-card-body">
+                <form class="layui-form" lay-filter="form-upload" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">上传</label>
+                        <div class="layui-upload-drag" id="upload" style="width: 450px">
+                            <i class="layui-icon"></i>
+                            <p>点击上传，或将文件拖拽到此处</p>
+                            <div class="layui-hide" id="upload-view">
+                                <hr />
+                                <img src="" alt="上传成功后渲染" style="max-width: 450px" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">图片链接</label>
+                        <div class="layui-input-block">
+                            <input
+                                type="text"
+                                name="url"
+                                required
+                                lay-verify="required"
+                                placeholder=""
+                                autocomplete="off"
+                                class="layui-input"
+                                style="width: 512px"
+                            />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            layui.use(["upload", "form"], function () {
+                upload = layui.upload
+                form = layui.form
+
+                upload.render({
+                    elem: "#upload",
+                    url: "../../api/upload",
+                    method: "POST",
+                    size: 8192,
+                    accept: "images",
+                    exts: "jpg|png|gif|bmp|jpeg",
+                    before: function (obj) {
+                        // 隐藏图片和清空链接
+                        layui.$("#upload-view").addClass("layui-hide")
+                        form.val("form-upload", {
+                            url: "",
+                        })
+                        // 加载中弹层
+                        layer.load()
+                    },
+                    done: function (res) {
+                        if (!res.code) {
+                            layer.msg("上传成功")
+                            imgURL = window.location.origin + res.data.uri
+                            // 显示图片和链接
+                            layui.$("#upload-view").removeClass("layui-hide").find("img").attr("src", imgURL)
+                            form.val("form-upload", {
+                                url: imgURL,
+                            })
+                        } else {
+                            layer.msg(`错误：${res.msg}`, {
+                                icon: 2,
+                            })
+                        }
+                        // 关闭加载中弹层
+                        layer.closeAll("loading")
+                    },
+                    error: function () {
+                        layer.msg(`请求接口失败`, {
+                            icon: 2,
+                        })
+                        layer.closeAll("loading")
+                    },
+                })
+            })
+        </script>
+    </body>
+</html>

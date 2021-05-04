@@ -95,16 +95,16 @@ func PostGet(c *gin.Context) {
 		apiFailed(c, err.Error())
 		return
 	}
-	cateID, tagsID, err := service.GetPostCateTags(uint32(id))
+	cate, tags, err := service.GetPostCateTags(uint32(id))
 	if err != nil {
 		apiFailed(c, err.Error())
 		return
 	}
 
 	apiOK(c, gin.H{
-		"post":        post,
-		"category_id": cateID,
-		"tags_id":     tagsID,
+		"post":     post,
+		"category": cate,
+		"tags":     tags,
 	}, "获取文章成功")
 }
 
@@ -125,19 +125,20 @@ func PostListNormal(c *gin.Context) {
 
 	res := make([]gin.H, 0, len(posts))
 	for i := range posts {
-		cateID, tagsID, err := service.GetPostCateTags(posts[i].Pid)
+		cate, tags, err := service.GetPostCateTags(posts[i].Pid)
 		if err != nil {
 			apiFailed(c, fmt.Sprintf("[ID%d]%s", posts[i].Pid, err.Error()))
 			return
 		}
 		res = append(res, gin.H{
-			"post":        &posts[i],
-			"category_id": cateID,
-			"tags_id":     tagsID,
+			"post":     &posts[i],
+			"category": cate,
+			"tags":     tags,
 		})
 	}
 
 	apiOK(c, gin.H{
-		"list": res,
+		"list":  res,
+		"total": service.CountNormalPost(),
 	})
 }

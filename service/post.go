@@ -41,6 +41,7 @@ func EditPost(req *request.Post) (uint32, error) {
 	} else {
 		post = &model.Post{
 			Created:      now,
+			Status:       model.POST_STATUS_PUBLISH,
 			CommentCount: 0,
 		}
 	}
@@ -78,7 +79,7 @@ func EditPost(req *request.Post) (uint32, error) {
 	}
 
 	// 处理分类、标签关系
-	if post.Pid > 0 {
+	if req.ID > 0 {
 		v = dao.Rela().RemoveByPostID(post.Pid)
 		if !v {
 			_ = dao.Rollback()
@@ -147,25 +148,20 @@ func GetPost(id uint32) (*model.Post, error) {
 	return post, nil
 }
 
-// 获取单个文章的分类、标签，返回分类ID、标签ID列表
-func GetPostCateTags(id uint32) (uint32, []uint32, error) {
+// 获取单个文章的分类、标签，返回分类、标签ID列表
+func GetPostCateTags(id uint32) (*model.Term, []model.Term, error) {
 	dao := dao.NewDao()
 	// 获取分类项
 	cate, v := dao.Term().ListByPostID(id, model.TERM_TYPE_CATEGORY)
 	if !v {
-		return 0, nil, fmt.Errorf("获取分类失败")
+		return nil, nil, fmt.Errorf("获取分类失败")
 	}
 
 	// 获取标签项
 	tags, _ := dao.Term().ListByPostID(id, model.TERM_TYPE_TAG)
 
-	// 整理
-	cateID := cate[0].Tid
-	tagsID := make([]uint32, len(tags))
-	for i, val := range tags {
-		tagsID[i] = val.Tid
-	}
-	return cateID, tagsID, nil
+	// 返回
+	return &cate[0], tags, nil
 }
 
 // 获取正常文章列表，返回类型为publish、sticky的文章列表（不包含分类、标签）
@@ -193,4 +189,10 @@ func ListNormalPost(pi, ps uint32) ([]model.Post, error) {
 		return nil, fmt.Errorf("该页不存在文章")
 	}
 	return result, nil
+}
+
+// 统计正常文章数量
+func CountNormalPost() uint32 {
+	dao := dao.NewDao()
+	return dao.Post().CountByStatus(model.POST_STATUS_PUBLISH) + dao.Post().CountByStatus(model.POST_STATUS_STICKY)
 }

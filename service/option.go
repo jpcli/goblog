@@ -7,23 +7,28 @@ import (
 	"goblog/model/request"
 )
 
-// 设置选项(泛用),考虑到目前程序设计,只支持option的修改
+// 设置选项(泛用)，考虑到程序设计，添加选项暂不执行
 func SetOption(kvs map[string]string) error {
 	dao := dao.NewDao()
-	// // 判断新增还是修改
-	// addGroup, modifyGroup := make(map[string]string), make(map[string]string)
-	// for name, val := range kvs {
-	// 	_, v := dao.Opt().GetByName(name)
-	// 	if v {
-	// 		modifyGroup[name] = val
-	// 	} else {
-	// 		addGroup[name] = val
-	// 	}
-	// }
-
-	// 提交数据库
-	_ = dao.Begin()
+	// 判断新增还是修改
+	addGroup, modifyGroup := make(map[string]string), make(map[string]string)
 	for name, val := range kvs {
+		optVal, v := dao.Opt().GetByName(name)
+		if v {
+			if optVal != val {
+				modifyGroup[name] = val
+			}
+		} else {
+			addGroup[name] = val
+		}
+	}
+
+	// 开始数据库操作
+	_ = dao.Begin()
+	// TODO 添加选项
+
+	// 修改选项
+	for name, val := range modifyGroup {
 		v := dao.Opt().Modify(&model.Option{Name: name, Value: val})
 		if !v {
 			_ = dao.Rollback()

@@ -7,9 +7,18 @@ import (
 func AppRun() {
 	r := gin.Default()
 
-	// API路由
-	api := r.Group("/api")
-	apiRouter(api)
+	// 静态资源
+	r.Static("/static", "./static")
+
+	// 管理页路由
+	admin := r.Group("/admin")
+	{
+		// API路由
+		api := admin.Group("/api")
+		apiRouter(api)
+		// 视图路由
+		admin.Static("/view", "./view/admin")
+	}
 
 	r.Run()
 }

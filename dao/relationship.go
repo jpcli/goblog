@@ -34,7 +34,7 @@ func (r *relaDao) AddMore(pid uint32, tids ...uint32) bool {
 
 	// 对应项的count+1
 	query := fmt.Sprintf("UPDATE terms SET count=count+1 WHERE tid in (%s)", strings.TrimSuffix(s.String(), ","))
-	res, err := r.c.Exec(query, pid)
+	res, err := r.c.Exec(query)
 	r.c.panicExistError(err)
 	return cmpRowsAffected(res, int64(len(tids)))
 }
