@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AppRun() {
+func AppRun(addr string) {
 	r := gin.Default()
 
 	// 静态资源
@@ -20,5 +20,5 @@ func AppRun() {
 		admin.Static("/view", "./view/admin")
 	}
 
-	r.Run()
+	r.Run(addr)
 }

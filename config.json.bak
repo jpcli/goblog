@@ -1,34 +1,34 @@
 {
-    "db": {
+    "mysql": {
         "ip": "127.0.0.1",
-        "port": "3306",
-        "username": "root",
-        "password": "123456",
-        "database": "goblog"
+        "port": 3306,
+        "user": "用户名",
+        "pwd": "密码",
+        "db": "数据库"
     },
     "redis": {
         "ip": "localhost",
         "port": 6379,
-        "password": "",
+        "pwd": "",
         "db": 0
     },
-    "app": {
-        "address": ":8080",
-        "mgt_uri": "/admin/fDBD9ryVscjdXXo4",
-        "log_file": "./err.log"
-    },
-    "jwt": {
-        "issuer": "发行人",
-        "key": "&06KU5%Z6i%^Wf7Z714vyqdAx5nQ$@HPmp75duybf7*c4nz*g@a&guK*Xq&WqLoWLBjiIkU5JBPhrvuKprE$#kZ%D5YNtqE21OA"
-    },
     "oauth": {
-        "admin": "管理员的github username",
         "github": {
-            "use-cf-worker": false,
-            "cf-worker-url": "由于国内访问github存在速度问题，可以上面设为true，部署handler/cf-worker.js到cloudflare worker上，此处填形如https://XXX.workers.dev",
+            "admin_user": "填写管理员的github username",
+            "use_cf_worker": false,
+            "cf_worker_url": "由于国内访问github存在速度问题，可以上面设为true，部署handler/cf-worker.js到cloudflare worker上，此处填形如https://XXX.workers.dev",
             "client_name": "应用名",
             "client_id": "应用id",
             "client_secret": "应用秘钥"
         }
+    },
+    "jwt": {
+        "issuer": "发行人",
+        "key": "jwt密钥，请随机生成一个长且复杂的字符串"
+    },
+     "app": {
+        "addr": ":8080",
+        "manage_uri": "/admin/XXXXXXXX(请随机生成一个长字符串替换XXX，并删除括号内容，例如：/admin/BmF1za083illXTrl)",
+        "log_file": "./err.log"
     }
 }
