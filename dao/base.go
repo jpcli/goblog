@@ -13,7 +13,7 @@ var db *sqlx.DB
 
 func OpenDatabase(ip string, port int, usr, pwd, database string) {
 	d, err := sqlx.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4", usr, pwd, ip, port, database))
-	if err != nil {
+	if err != nil || d.Ping() != nil {
 		panic(fmt.Errorf("打开数据库失败"))
 	}
 	db = d
