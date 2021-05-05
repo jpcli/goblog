@@ -1,6 +1,9 @@
 package router
 
 import (
+	"goblog/utils/config"
+	"path"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,7 +14,7 @@ func AppRun(addr string) {
 	r.Static("/static", "./static")
 
 	// 管理页路由
-	admin := r.Group("/admin")
+	admin := r.Group(path.Join("/admin", config.AdminSafetyFactor()))
 	{
 		// API路由
 		api := admin.Group("/api")

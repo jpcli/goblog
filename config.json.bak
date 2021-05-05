@@ -28,7 +28,7 @@
     },
      "app": {
         "addr": ":8080",
-        "manage_uri": "/admin/XXXXXXXX(请随机生成一个长字符串替换XXX，并删除括号内容，例如：/admin/BmF1za083illXTrl)",
+        "admin_safety_factor": "填写随机长字符串，用于防止后台被爆破，例如：BmF1za083illXTrl",
         "log_file": "./err.log"
     }
 }

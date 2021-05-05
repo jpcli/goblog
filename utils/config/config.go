@@ -121,16 +121,16 @@ func JwtKey() string {
 
 // app应用运行配置
 type app struct {
-	Addr      string `json:"addr"`
-	ManageURI string `json:"manage_uri"`
-	LogFile   string `json:"log_file"`
+	Addr              string `json:"addr"`
+	AdminSafetyFactor string `json:"admin_safety_factor"`
+	LogFile           string `json:"log_file"`
 }
 
 func AppAddr() string {
 	return config.app.Addr
 }
-func AppManageURI() string {
-	return config.app.ManageURI
+func AdminSafetyFactor() string {
+	return config.app.AdminSafetyFactor
 }
 func AppLogFile() string {
 	return config.app.LogFile
