@@ -7,7 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AppRun(addr string) {
+// 运行应用程序，执行前应已经正常打开所有依赖组件
+func AppRun() {
 	r := gin.Default()
 
 	// 静态资源
@@ -23,5 +24,5 @@ func AppRun(addr string) {
 		admin.Static("/view", "./view/admin")
 	}
 
-	r.Run(addr)
+	r.Run(config.AppAddr())
 }

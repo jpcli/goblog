@@ -3,6 +3,7 @@ package dao
 import (
 	"database/sql"
 	"fmt"
+	"goblog/utils/config"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -11,8 +12,13 @@ import (
 // 数据库连接池单例
 var db *sqlx.DB
 
-func OpenDatabase(ip string, port int, usr, pwd, database string) {
-	d, err := sqlx.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4", usr, pwd, ip, port, database))
+// 打开数据库连接，执行前应正确加载config，若无法打开数据库会报错
+func OpenDatabase() {
+	d, err := sqlx.Open("mysql",
+		fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4",
+			config.MysqlUser(), config.MysqlPwd(), config.MysqlIP(), config.MysqlPort(), config.MysqlDB(),
+		),
+	)
 	if err != nil || d.Ping() != nil {
 		panic(fmt.Errorf("打开数据库失败"))
 	}
@@ -126,7 +132,7 @@ func (c *conn) Rollback() error {
 func (c *conn) panicExistError(err error) {
 	if err != nil {
 		if c.tx != nil {
-			c.Rollback()
+			_ = c.Rollback()
 		}
 		panic(err)
 	}

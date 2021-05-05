@@ -8,6 +8,6 @@ import (
 
 func main() {
 	config.LoadConfig()
-	dao.OpenDatabase(config.MysqlIP(), config.MysqlPort(), config.MysqlUser(), config.MysqlPwd(), config.MysqlDB())
-	router.AppRun(config.AppAddr())
+	dao.OpenDatabase()
+	router.AppRun()
 }
