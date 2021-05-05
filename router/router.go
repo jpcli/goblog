@@ -1,6 +1,7 @@
 package router
 
 import (
+	"goblog/controller"
 	"goblog/utils/config"
 	"path"
 
@@ -13,6 +14,13 @@ func AppRun() {
 
 	// 静态资源
 	r.Static("/static", "./static")
+
+	// 登录功能路由
+	// r.StaticFile("/login.html", "./view/front/login.html")
+	loginAPI := r.Group("/api/login")
+	{
+		loginAPI.GET("/github", controller.GithubLogin)
+	}
 
 	// 管理页路由
 	admin := r.Group(path.Join("/admin", config.AdminSafetyFactor()))
