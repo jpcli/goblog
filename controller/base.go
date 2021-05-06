@@ -34,12 +34,3 @@ func apiOK(c *gin.Context, data gin.H, msg ...string) {
 	})
 	c.Abort()
 }
-
-// api未授权
-func apiUnauth(c *gin.Context) {
-	c.JSON(http.StatusUnauthorized, gin.H{
-		"code": -1,
-		"msg":  "您没有权限访问该页面",
-	})
-	c.Abort()
-}

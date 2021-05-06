@@ -2,6 +2,7 @@ package router
 
 import (
 	"goblog/controller"
+	"goblog/middleware"
 	"goblog/utils/config"
 	"path"
 
@@ -23,7 +24,7 @@ func AppRun() {
 	}
 
 	// 管理页路由
-	admin := r.Group(path.Join("/admin", config.AdminSafetyFactor()))
+	admin := r.Group(path.Join("/admin", config.AdminSafetyFactor()), middleware.Auth)
 	{
 		// API路由
 		api := admin.Group("/api")
