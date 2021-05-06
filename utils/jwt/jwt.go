@@ -17,7 +17,7 @@ type CustomClaims struct {
 
 func NewJWT(c *CustomClaims) (string, error) {
 	// 设置版本号，有更改时可以使之前签发的jwt失效
-	c.JWTVersion = 1
+	c.JWTVersion = config.JwtVersion()
 	// 设置过期时间
 	c.StandardClaims = jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(3 * time.Hour).Unix(),

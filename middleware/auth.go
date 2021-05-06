@@ -18,7 +18,7 @@ func Auth(c *gin.Context) {
 	}
 
 	claims, err := jwt.ParseJWT(cookie.Value)
-	if err != nil {
+	if err != nil || claims.JWTVersion != config.JwtVersion() {
 		unauth(c, "登录凭证无效或过期")
 		return
 	}

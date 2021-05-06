@@ -108,10 +108,14 @@ func OauthGithubClientSecret() string {
 
 // jwt配置
 type jwt struct {
-	Issuer string `json:"issuer"`
-	Key    string `json:"key"`
+	Version int    `json:"version"`
+	Issuer  string `json:"issuer"`
+	Key     string `json:"key"`
 }
 
+func JwtVersion() int {
+	return config.jwt.Version
+}
 func JwtIssuer() string {
 	return config.jwt.Issuer
 }
