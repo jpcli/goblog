@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+        <title></title>
+        <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.2/css/all.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3.5.1/dist/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/sentsin/layer@v3.4.0/dist/layer.js"></script>
+        <style>
+            body {
+                background-color: #f2f2f2;
+            }
+
+            #container {
+                width: 375px;
+                height: 450px;
+                background: #fff;
+                border-radius: 5px;
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+            }
+
+            @media screen and (max-width: 768px) {
+                #container {
+                    width: 300px;
+                }
+            }
+
+            #head {
+                width: 100%;
+                height: 150px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 50px;
+                position: relative;
+            }
+
+            #avatar {
+                width: 130px;
+                height: 130px;
+                border-radius: 50%;
+                overflow: hidden;
+                position: absolute;
+            }
+
+            #avatar img {
+                width: 100%;
+                height: 100%;
+            }
+
+            #loader {
+                position: absolute;
+                width: 130px;
+                height: 130px;
+                border: 3px solid #ebeced;
+                border-radius: 50%;
+                z-index: 1;
+            }
+
+            .loading {
+                border-left-color: #009f95 !important;
+                border-radius: 50%;
+                animation: rotate 1s linear infinite;
+            }
+
+            @keyframes rotate {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .hr-box {
+                height: 40px;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+                box-sizing: border-box;
+                padding: 0 50px;
+                margin-top: 100px;
+            }
+
+            .hr-box .line {
+                height: 2px;
+                flex-grow: 1;
+                background-color: #d8d8d8;
+            }
+
+            .hr-box .text {
+                color: #d8d8d8;
+                margin: 0 5px;
+            }
+
+            #auth {
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+                margin: 20px;
+            }
+
+            .auth-item {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                overflow: hidden;
+            }
+
+            .auth-item i {
+                font-size: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <div id="head">
+                <div id="loader"></div>
+                <div id="avatar">
+                    <img src="https://www.jpcli.top/static/upload/2021/02/ylMyKs.jpg" alt="" />
+                </div>
+            </div>
+            <div class="hr-box">
+                <span class="line"></span>
+                <span class="text">第三方登录</span>
+                <span class="line"></span>
+            </div>
+            <div id="auth">
+                <div class="auth-item" oauth-type="github">
+                    <i class="fab fa-github" style="color: black"></i>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            function getSearchValue(key) {
+                let query = window.location.search.substring(1)
+                let kvs = query.split("&")
+                for (let i = 0; i < kvs.length; i++) {
+                    let pair = kvs[i].split("=")
+                    if (pair[0] == key) {
+                        return pair[1]
+                    }
+                }
+                return false
+            }
+        </script>
+
+        <!-- 跳转到第三方登录函数 -->
+        <script type="text/javascript">
+            function redirect(oauth_type) {
+                return function () {
+                    let callback_url = window.location.origin + "/login.html" + encodeURIComponent(`?oauth_type=${oauth_type}&from_url=${from_url}`),
+                        oauth_url = ""
+                    if (oauth_type == "github")
+                        oauth_url = "https://github.com/login/oauth/authorize?client_id=1e71889dbd7d5968c12a&redirect_uri=" + callback_url
+                    else {
+                        layer.msg("第三方登录类型无效", { icon: 2 })
+                        return
+                    }
+
+                    layer.msg("正在跳转到授权界面")
+                    document.location.href = oauth_url
+                }
+            }
+        </script>
+
+        <!-- 初始化 -->
+        <script type="text/javascript">
+            let all_oauth_type = document.querySelectorAll("*[oauth-type]")
+            for (i = 0; i < all_oauth_type.length; i++) {
+                now = all_oauth_type[i]
+                now.addEventListener("click", redirect(now.getAttribute("oauth-type")))
+            }
+
+            let from_url = "/" // 主页
+            let url = getSearchValue("from_url"),
+                oauth_type = getSearchValue("oauth_type")
+            if (url) from_url = url
+        </script>
+
+        <!-- 第三方登录返回验证 -->
+        <script type="text/javascript">
+            !(function () {
+                if (!oauth_type) return
+
+                // loading 特效
+                let loader = document.querySelector("#loader")
+                loader.classList.add("loading")
+                // 请求
+                fetch("/api/login/github?code=" + getSearchValue("code"), {
+                    method: "GET",
+                })
+                    .then(res => {
+                        return res.json()
+                    })
+                    .then(res => {
+                        if (res.code) {
+                            layer.msg(res.msg, { icon: 2 })
+                            loader.classList.remove("loading")
+                            return
+                        }
+
+                        // 获取返回数据
+                        let jwt = res.data.jwt,
+                            to = res.data.to
+                        // 分析jwt过期时间
+                        let expires = JSON.parse(window.atob(jwt.split(".")[1])).exp
+                        // 设置cookie
+                        document.cookie = `jwt=${jwt};path=/;expires=${new Date(expires * 1000).toGMTString()}`
+                        layer.msg("登录成功，即将跳转", { icon: 1 })
+                        // 跳转
+                        if (to) {
+                            window.location.href = to
+                        } else {
+                            window.location.href = from_url
+                        }
+                    })
+            })()
+        </script>
+    </body>
+</html>

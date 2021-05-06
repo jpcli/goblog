@@ -17,7 +17,7 @@ func AppRun() {
 	r.Static("/static", "./static")
 
 	// 登录功能路由
-	// r.StaticFile("/login.html", "./view/front/login.html")
+	r.StaticFile("/login.html", "./view/front/login.html")
 	loginAPI := r.Group("/api/login")
 	{
 		loginAPI.GET("/github", controller.GithubLogin)
